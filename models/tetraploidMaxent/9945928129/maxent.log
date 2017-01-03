@@ -1,0 +1,35 @@
+Mon Jan 02 22:09:05 CST 2017
+MaxEnt version 3.3.3k
+Reading file absence
+readGrid: max memory 530186240, total allocated 85000192, free 64316928, used 20683264, increment 336880
+Reading samples from presence
+Read samples: max memory 530186240, total allocated 85000192, free 65377424, used 19622768, increment -1060496
+Adding samples to background in feature space
+Command line used:  autorun -e /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/absence -o /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129 -s /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=/var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129 samplesfile=/var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/presence environmentallayers=/var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/absence autorun novisible
+Species: species
+Layers: ppt tmean vpdmax vpdmin
+Layertypes: Continuous Continuous Continuous Continuous
+outputdirectory: /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129
+samplesfile: /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/presence
+environmentallayers: /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T//RtmplkSWx1/raster//maxent/9945928129/absence
+autorun: true
+visible: false
+
+getSamples: max memory 530186240, total allocated 85000192, free 64677816, used 20322376, increment 699608
+Making features
+makeFeatures: max memory 530186240, total allocated 85000192, free 63551880, used 21448312, increment 1125936
+species: 
+Regularization values: linear/quadratic/product: 0.190, categorical: 0.250, threshold: 1.490, hinge: 0.500
+51 samples
+Density: max memory 530186240, total allocated 85000192, free 58086864, used 26913328, increment 5465016
+linearPredictor: max memory 530186240, total allocated 85000192, free 58086864, used 26913328, increment 0
+FeaturedSpace: max memory 530186240, total allocated 85000192, free 58086864, used 26913328, increment 0
+Sequential: max memory 530186240, total allocated 85000192, free 58086864, used 26913328, increment 0
+Initial loss: 9.21542741102474
+Time since start: 5.62
+500: time = 5.514000 loss = 8.591703
+Resulting gain: 0.6237248234833075
+Projecting...
+Writing file /var/folders/8n/h0t16wp556g0kqsb9s5vv3br0000gn/T/RtmplkSWx1/raster/maxent/9945928129/species.csv
+Ending
