@@ -19,6 +19,7 @@ histBoth <- historical %>%
 histDip <- historical %>% 
   filter(Cytotype == "2X") %>%
   dplyr::select(Longitude, Latitude)
+write.csv(histDip, "data/historicalDiploid.csv", row.names = FALSE)
 histTet <- historical %>%
   filter(Cytotype == "4X") %>%
   dplyr::select(Longitude, Latitude)
@@ -31,6 +32,7 @@ crs(tetTemp) <- crs(SEstates) # apply CRS
 overTet <- over(tetTemp, SEstates) # query polygons
 rmTet <- which(is.na(overTet$NAME)) # find outliers
 histTet <- histTet[-rmTet,] # remove outliers
+write.csv(histTet, "data/historicalTetraploid.csv", row.names = FALSE)
 
 ## load historical layers
 ppt <- raster("PastLayers/ppt.asc", crs=CRS)

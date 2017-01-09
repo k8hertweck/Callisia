@@ -3,6 +3,10 @@
 library(raster)
 library(dismo)
 
+## load data
+histDip <- read.csv("data/historicalDiploid.csv")
+histTet <- read.csv("data/historicalTetraploid.csv")
+
 ## load layers
 CRS <- "+proj=longlat +datum=NAD83 +ellps=GRS80 +towgs84=0,0,0 +no_defs"
 # historical
@@ -13,6 +17,9 @@ tmean <- raster("PastLayers/tmean.asc", crs=CRS)
 tmin <- raster("PastLayers/tmin.asc", crs=CRS)
 vpdmax <- raster("PastLayers/vpdmax.asc", crs=CRS)
 vpdmin <- raster("PastLayers/vpdmin.asc", crs=CRS)
+# stack uncorrelated historical layers (0.75): ppt, tmean, vpdmax, vpdmin
+predictorsHist <- stack(ppt, tmean, vpdmax, vpdmin)
+
 # contemporary 
 ppt15 <- raster("PresentLayers/ppt.asc", crs=CRS)
 tdmean15 <- raster("PresentLayers/tdmean.asc", crs=CRS)
@@ -21,15 +28,49 @@ tmean15 <- raster("PresentLayers/tmean.asc", crs=CRS)
 tmin15 <- raster("PresentLayers/tmin.asc", crs=CRS)
 vpdmax15 <- raster("PresentLayers/vpdmax.asc", crs=CRS)
 vpdmin15 <- raster("PresentLayers/vpdmin.asc", crs=CRS)
+# stack uncorrelated contemporary layers (0.75): ppt, tmean, vpdmax, vpdmin
+predictorsContemp <- stack(ppt15, tmean15, vpdmax15, vpdmin15)
 
 ## diploid
-dipHis <- raster("models/diploidMaxent/histDip.grd")
-dipContemp <- raster("models/diploidMaxent/contempDip.grd")
-nicheOverlap(dipHis, dipContemp, stat='D', mask=TRUE, checkNegatives=TRUE) #0.0634
-nicheOverlap(dipHis, dipContemp, stat='I', mask=TRUE, checkNegatives=TRUE) #0.1849
+histDipProj <- raster("models/diploidMaxent/histDip.grd")
+contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
+# compare with D and I statistics
+nicheOverlap(histDipProj, contempDipProj, stat='D', mask=TRUE, checkNegatives=TRUE) #0.0634
+nicheOverlap(histDipProj, contempDipProj, stat='I', mask=TRUE, checkNegatives=TRUE) #0.1849
+# extract layer data for each point
+histDipPts <- raster::extract(predictorsHist, histDip)
+histDipPts <- cbind.data.frame(year ="historical", histDipPts)
+contempDipPts <- raster::extract(predictorsContemp, histDip)
+contempDipPts <- cbind.data.frame(year ="contemporary", contempDipPts)
+bothDipPts <- as.data.frame(rbind(histDipPts, contempDipPts))
+# ANOVA
+aov.ppt.hist <- aov(ppt ~ year, data=bothDipPts)
+summary(aov.ppt.hist) #<2e-16 ***
+aov.tmean.hist <- aov(tmean ~ year, data=bothDipPts)
+summary(aov.tmean.hist) #<2e-16 ***
+aov.vpdmax.hist <- aov(vpdmax ~ year, data=bothDipPts)
+summary(aov.vpdmax.hist) #0.00138 **
+aov.vpdmin.hist <- aov(vpdmin ~ year, data=bothDipPts)
+summary(aov.vpdmin.hist) #0.00705 **
 
 ## tetraploid
-tetHis <- raster("models/tetraploidMaxent/histTet.grd")
-tetContemp <- raster("models/tetraploidMaxent/histTetContemp.grd")
-nicheOverlap(tetHis, tetContemp, stat='D', mask=TRUE, checkNegatives=TRUE) #0.4955
-nicheOverlap(tetHis, tetContemp, stat='I', mask=TRUE, checkNegatives=TRUE) #0.7885
+histTetProj <- raster("Models/tetraploidMaxent/histTet.grd")
+contempTetProj <- raster("Models/tetraploidMaxent/contempTet.grd")
+# compare with D and I statistics
+nicheOverlap(histTetProj, contempTetProj, stat='D', mask=TRUE, checkNegatives=TRUE) #0.4955
+nicheOverlap(histTetProj, contempTetProj, stat='I', mask=TRUE, checkNegatives=TRUE) #0.7885
+# extract layer data for each point
+histTetPts <- raster::extract(predictorsHist, histTet)
+histTetPts <- cbind.data.frame(year="historical", histTetPts)
+contempTetPts <- raster::extract(predictorsContemp, histTet)
+contempTetPts <- cbind.data.frame(year="contemporary", contempTetPts)
+bothTetPts <- as.data.frame(rbind(histTetPts, contempTetPts))
+# ANOVA
+aov.ppt.contemp <- aov(ppt ~ year, data=bothTetPts)
+summary(aov.ppt.contemp) #<2e-16 ***
+aov.tmean.contemp <- aov(tmean ~ year, data=bothTetPts)
+summary(aov.tmean.contemp) #1.57e-11 ***
+aov.vpdmax.contemp <- aov(vpdmax ~ year, data=bothTetPts)
+summary(aov.vpdmax.contemp) #0.986
+aov.vpdmin.contemp <- aov(vpdmin ~ year, data=bothTetPts)
+summary(aov.vpdmin.contemp) #2.07e-08 ***
