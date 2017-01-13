@@ -8,6 +8,7 @@ library(raster)
 library(maptools)
 library(dplyr)
 library(rJava)
+library(viridis)
 
 # create subdirectories
 dir.create("models")
@@ -102,3 +103,29 @@ predTetContemp <- predict(maxentTet, predictorsContemp) # create model
 plot(predTetContemp)
 points(histTet)
 writeRaster(predTetContemp, "models/tetraploidMaxent/histTetContemp.grd")
+
+## create plots for figures
+# load occurrence data
+contempDip <- read.csv(file="data/contemporaryDiploid.csv")
+contempTet <- read.csv(file="data/contemporaryTetraploid.csv")
+# load projections
+histDipProj <- raster("models/diploidMaxent/histDip.grd")
+contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
+histTetProj <- raster("Models/tetraploidMaxent/histTet.grd")
+contempTetProj <- raster("Models/tetraploidMaxent/contempTet.grd")
+# create plot
+
+#colors <- brewer.pal(8, "YlGnBu")
+brk <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+par(mfrow=c(2,2), mar=c(0,0,0,0), bty="n")
+plot(histDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+points(histDip$Longitude, histDip$Latitude, pch=20, cex=0.8, col="white")
+
+plot(histTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+points(histTet$Longitude, histTet$Latitude, pch=20, cex=0.8, col="white")
+
+plot(contempDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+points(contempDip$Longitude, contempDip$Latitude, pch=20, cex=0.8, col="white")
+
+plot(contempTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+points(contempTet$Longitude, contempTet$Latitude, pch=20, cex=0.8, col="white")
