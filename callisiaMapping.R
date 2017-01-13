@@ -38,8 +38,10 @@ ggplot(contempGS, aes(pg.2C, fill=Site.number), color=Site.number) + geom_histog
 # separate into putative diploid and tetraploid
 contempDip <- contempGS %>%
   filter(pg.2C < 60)
+write.csv(contempDip, "data/contemporaryDiploid.csv", row.names=FALSE)
 contempTet <- contempGS %>%
   filter(pg.2C > 60)
+write.csv(contempTet, "data/contemporaryTetraploid.csv", row.names = FALSE)
 
 # map all occurrence points
 jpeg(file="figures/mappingAll.jpg")
