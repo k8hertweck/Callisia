@@ -31,16 +31,20 @@ contempGS <- contemp %>%
 ggplot(contempGS, aes(pg.2C)) + geom_histogram(binwidth=5) + 
   labs(x = "genome size (pg/2C)",
        y = "number of individuals") +
-  theme_bw()
+  theme_bw() +
+  theme(axis.title = element_text(size=22)) +
+  theme(axis.text = element_text(size=20))
 ggsave("figures/GShistogram.jpg", width=10, height=8)
 # plot histogram and color by site
 ggplot(contempGS, aes(pg.2C, fill=Site.number), color=Site.number) + geom_histogram(binwidth=5)
 # separate into putative diploid and tetraploid
 contempDip <- contempGS %>%
   filter(pg.2C < 60)
+range(contempDip$pg.2C) #36.53 47.87
 write.csv(contempDip, "data/contemporaryDiploid.csv", row.names=FALSE)
 contempTet <- contempGS %>%
   filter(pg.2C > 60)
+range(contempTet$pg.2C) #73.71 84.52
 write.csv(contempTet, "data/contemporaryTetraploid.csv", row.names = FALSE)
 
 # map all occurrence points
