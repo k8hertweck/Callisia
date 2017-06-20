@@ -142,8 +142,16 @@ histDipProj <- raster("models/diploidMaxent/histDip.grd")
 contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
 histTetProj <- raster("Models/tetraploidMaxent/histTet.grd")
 contempTetProj <- raster("Models/tetraploidMaxent/contempTet.grd")
-modModDipProj <- raster("Models/diploidModMaxent/modDip.grd")
-modModTetProj <- raster("Models/tetraploidModMaxent/modTet.grd")
+modDipProj <- raster("Models/diploidModMaxent/modDip.grd")
+modTetProj <- raster("Models/tetraploidModMaxent/modTet.grd")
+
+# quick plots, individual
+plot(histDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(contempDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(modModDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(histTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(contempTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(modModTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
 
 # create plot for sharing
 #colors <- brewer.pal(8, "YlGnBu")
