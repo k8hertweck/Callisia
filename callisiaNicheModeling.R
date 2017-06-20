@@ -53,7 +53,7 @@ predictorsHist <- stack(ppt, tmean, vpdmax, vpdmin)
 # plot each layer individually
 plot(predictorsHist)
 
-# default maxent modeling
+# default maxent modeling (historical)
 # diploid modeling
 maxentDip <- maxent(predictorsHist, histDip)
 maxentDip # view results in browser window
@@ -67,7 +67,7 @@ plot(predDip)
 points(histDip)
 writeRaster(predDip, "models/diploidMaxent/histDip.grd")
 
-# default maxent modeling
+# default maxent modeling (historical)
 # tetraploid modeling
 maxentTet <- maxent(predictorsHist, histTet)
 maxentTet # view results in browser window
@@ -108,13 +108,44 @@ plot(predTetContemp)
 points(histTet)
 writeRaster(predTetContemp, "models/tetraploidMaxent/histTetContemp.grd")
 
+# default maxent modeling (historical)
+# diploid modeling
+maxentDipMod <- maxent(predictorsContemp, histDip)
+maxentDipMod # view results in browser window
+dir.create("models/diploidModMaxent")
+# save output files
+file.copy(maxentDipMod@path, "models/diploidModMaxent/", recursive=TRUE) 
+response(maxentDipMod) # show response curves for each layer
+predDipMod <- predict(maxentDipMod, predictorsContemp) # create model
+# plot predictive model
+plot(predDipMod) 
+points(histDip)
+writeRaster(predDipMod, "models/diploidModMaxent/modDip.grd")
+
+# default maxent modeling (contemporary)
+# tetraploid modeling
+maxentTetMod <- maxent(predictorsContemp, histTet)
+maxentTetMod # view results in browser window
+dir.create("models/tetraploidModMaxent")
+# save output files
+file.copy(maxentTetMod@path, "models/tetraploidModMaxent/", recursive=TRUE)  
+response(maxentTetMod) # show response curves for each layer
+predTetMod <- predict(maxentTetMod, predictorsContemp) # create model
+# plot predictive model
+plot(predTetMod) 
+points(histTet)
+writeRaster(predTetMod, "models/tetraploidModMaxent/modTet.grd")
+
 ## create plots for figures
 # load projections
 histDipProj <- raster("models/diploidMaxent/histDip.grd")
 contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
 histTetProj <- raster("Models/tetraploidMaxent/histTet.grd")
 contempTetProj <- raster("Models/tetraploidMaxent/contempTet.grd")
-# create plot
+modModDipProj <- raster("Models/diploidModMaxent/modDip.grd")
+modModTetProj <- raster("Models/tetraploidModMaxent/modTet.grd")
+
+# create plot for sharing
 #colors <- brewer.pal(8, "YlGnBu")
 brk <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
 jpeg("figures/projections.jpg")
