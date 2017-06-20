@@ -12,10 +12,16 @@ library(viridis)
 
 # create subdirectories
 dir.create("models")
+# model nomenclature: 
+# hist=historical, contemp=contemporary
+# first references points, second references layers for maxent, third is layers for projection
+# folders labeled with layers for maxent
 
 # load contemporary occurrence data
 contempDip <- read.csv(file="data/contemporaryDiploid.csv")
+contempDip <- dplyr::select(contempDip, Longitude, Latitude)
 contempTet <- read.csv(file="data/contemporaryTetraploid.csv")
+contempTet <- dplyr::select(contempTet, Longitude, Latitude)
 
 # load and parse historical occurrence data
 historical <- read.csv(file="data/callisia_historical_occurrence.csv")
@@ -53,33 +59,32 @@ predictorsHist <- stack(ppt, tmean, vpdmax, vpdmin)
 # plot each layer individually
 plot(predictorsHist)
 
-# default maxent modeling (historical)
+# default maxent modeling (historical points, historical layers)
 # diploid modeling
-maxentDip <- maxent(predictorsHist, histDip)
-maxentDip # view results in browser window
-dir.create("models/diploidMaxent")
+maxentHistHistDip <- maxent(predictorsHist, histDip)
+maxentHistHistDip # view results in browser window
+dir.create("models/diploidHistMaxent")
 # save output files
-file.copy(maxentDip@path, "models/diploidMaxent/", recursive=TRUE) 
-response(maxentDip) # show response curves for each layer
-predDip <- predict(maxentDip, predictorsHist) # create model
+file.copy(maxentHistHistDip@path, "models/diploidHistMaxent/", recursive=TRUE)
+response(maxentHistHistDip) # show response curves for each layer
+predHistHistHistDip <- predict(maxentHistHistDip, predictorsHist) # create model
 # plot predictive model
-plot(predDip) 
+plot(predHistHistHistDip) 
 points(histDip)
-writeRaster(predDip, "models/diploidMaxent/histDip.grd")
+writeRaster(predHistHistHistDip, "models/diploidHistMaxent/histHistHistDip.grd")
 
-# default maxent modeling (historical)
-# tetraploid modeling
-maxentTet <- maxent(predictorsHist, histTet)
-maxentTet # view results in browser window
-dir.create("models/tetraploidMaxent")
+# tetraploid modeling (historical points, historical layers)
+maxentHistHistTet <- maxent(predictorsHist, histTet)
+maxentHistHistTet # view results in browser window
+dir.create("models/tetraploidHistMaxent")
 # save output files
-file.copy(maxentTet@path, "models/tetraploidMaxent/", recursive=TRUE)  
-response(maxentTet) # show response curves for each layer
-predTet <- predict(maxentTet, predictorsHist) # create model
+file.copy(maxentTet@path, "models/tetraploidHistMaxent/", recursive=TRUE)  
+response(maxentHistHistTet) # show response curves for each layer
+predHistHistHistTet <- predict(maxentHistHistTet, predictorsHist) # create model
 # plot predictive model
-plot(predTet) 
+plot(predHistHistHistTet) 
 points(histTet)
-writeRaster(predTet, "models/tetraploidMaxent/histTet.grd")
+writeRaster(predHistHistHistTet, "models/tetraploidHistMaxent/histHistHistTet.grd")
 
 ## load contemporary layers
 ppt15 <- raster("PresentLayers/ppt.asc", crs=CRS)
@@ -96,82 +101,114 @@ predictorsContemp <- stack(ppt15, tmean15, vpdmax15, vpdmin15)
 plot(predictorsContemp)
 
 # project historical model onto contemporary layers
-predDipContemp <- predict(maxentDip, predictorsContemp) # create model
+predHistHistContempDip <- predict(maxentHistHistDip, predictorsContemp) # create model
 # plot predictive model
-plot(predDipContemp) 
+plot(predHistHistContempDip) 
 points(histDip)
-writeRaster(predDipContemp, "models/diploidMaxent/contempDip.grd")
+writeRaster(predHistHistContempDip, "models/diploidHistMaxent/histHistContempDip.grd")
 
-predTetContemp <- predict(maxentTet, predictorsContemp) # create model
+predHistHistContempTet <- predict(maxentHistHistTet, predictorsContemp) # create model
 # plot predictive model
-plot(predTetContemp)
+plot(predHistHistContempTet)
 points(histTet)
-writeRaster(predTetContemp, "models/tetraploidMaxent/histTetContemp.grd")
+writeRaster(predHistHistContempTet, "models/tetraploidHistMaxent/histHistContempTet.grd")
 
-# default maxent modeling (historical)
+# default maxent modeling (historical points, contemporary layers)
 # diploid modeling
-maxentDipMod <- maxent(predictorsContemp, histDip)
-maxentDipMod # view results in browser window
+maxentHistContempDip <- maxent(predictorsContemp, histDip)
+maxentHistContempDip # view results in browser window
+dir.create("models/diploidContempMaxent")
+# save output files
+file.copy(maxentHistContempDip@path, "models/diploidContempMaxent/", recursive=TRUE) 
+response(maxentHistContempDip) # show response curves for each layer
+predHistContempContempDip <- predict(maxentHistContempDip, predictorsContemp) # create model
+# plot predictive model
+plot(predHistContempContempDip) 
+points(histDip)
+writeRaster(predHistContempContempDip, "models/diploidContempMaxent/histContempContempDip.grd")
+
+# tetraploid modeling (historical points, contemporary layers)
+maxentHistContempTet <- maxent(predictorsContemp, histTet)
+maxentHistContempTet # view results in browser window
+dir.create("models/tetraploidContempMaxent")
+# save output files
+file.copy(maxentHistContempTet@path, "models/tetraploidContempMaxent/", recursive=TRUE)  
+response(maxentHistContempTet) # show response curves for each layer
+predHistContempContempTet <- predict(maxentHistContempTet, predictorsContemp) # create model
+# plot predictive model
+plot(predHistContempContempTet) 
+points(histTet)
+writeRaster(predHistContempContempTet, "models/tetraploidContempMaxent/histContempContempTet.grd")
+
+# default maxent modeling (contemporary points, contemporary layers)
+# diploid modeling
+maxentContempContempDip <- maxent(predictorsContemp, contempDip)
+maxentContempContempDip # view results in browser window
 dir.create("models/diploidModMaxent")
 # save output files
-file.copy(maxentDipMod@path, "models/diploidModMaxent/", recursive=TRUE) 
-response(maxentDipMod) # show response curves for each layer
-predDipMod <- predict(maxentDipMod, predictorsContemp) # create model
+file.copy(maxentContempContempDip@path, "models/diploidModMaxent/", recursive=TRUE) 
+response(maxentContempContempDip) # show response curves for each layer
+predContempContempContempDip <- predict(maxentContempContempDip, predictorsContemp) # create model
 # plot predictive model
-plot(predDipMod) 
-points(histDip)
-writeRaster(predDipMod, "models/diploidModMaxent/modDip.grd")
+plot(predContempContempContempDip) 
+points(contempDip)
+writeRaster(predContempContempContempDip, "models/diploidModMaxent/contempContempContempDip.grd")
 
-# default maxent modeling (contemporary)
-# tetraploid modeling
-maxentTetMod <- maxent(predictorsContemp, histTet)
-maxentTetMod # view results in browser window
+# tetraploid modeling (contemporary points, contemporary layers)
+maxentContempContempTet <- maxent(predictorsContemp, contempTet)
+maxentContempContempTet # view results in browser window
 dir.create("models/tetraploidModMaxent")
 # save output files
-file.copy(maxentTetMod@path, "models/tetraploidModMaxent/", recursive=TRUE)  
-response(maxentTetMod) # show response curves for each layer
-predTetMod <- predict(maxentTetMod, predictorsContemp) # create model
+file.copy(maxentContempContempTet@path, "models/tetraploidModMaxent/", recursive=TRUE)  
+response(maxentContempContempTet) # show response curves for each layer
+predContempContempContempTet <- predict(maxentContempContempTet, predictorsContemp) # create model
 # plot predictive model
-plot(predTetMod) 
-points(histTet)
-writeRaster(predTetMod, "models/tetraploidModMaxent/modTet.grd")
+plot(predContempContempContempTet) 
+points(contempTet)
+writeRaster(predContempContempContempTet, "models/tetraploidModMaxent/contempContempContempTet.grd")
 
 ## create plots for figures
 # load projections
-histDipProj <- raster("models/diploidMaxent/histDip.grd")
-contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
-histTetProj <- raster("Models/tetraploidMaxent/histTet.grd")
-contempTetProj <- raster("Models/tetraploidMaxent/contempTet.grd")
-modDipProj <- raster("Models/diploidModMaxent/modDip.grd")
-modTetProj <- raster("Models/tetraploidModMaxent/modTet.grd")
+predHistHistHistDip <- raster("models/diploidHistMaxent/histHistHistDip.grd")
+predHistHistHistTet <- raster("models/tetraploidHistMaxent/histHistHistTet.grd")
+predHistHistContempDip <- raster("models/diploidHistMaxent/histHistContempDip.grd")
+predHistHistContempTet <- raster("models/tetraploidHistMaxent/histHistContempTet.grd")
+predHistContempContempDip <- raster("models/diploidContempMaxent/histContempContempDip.grd")
+predHistContempContempTet <- raster("models/tetraploidContempMaxent/histContempContempTet.grd")
+predContempContempContempDip <- raster("models/diploidModMaxent/contempContempContempDip.grd")
+predContempContempContempTet <- raster("models/tetraploidModMaxent/contempContempContempTet.grd")
 
-# quick plots, individual
-plot(histDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-plot(contempDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-plot(modModDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-plot(histTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-plot(contempTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-plot(modModTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
-
-# create plot for sharing
+# plot prep
 #colors <- brewer.pal(8, "YlGnBu")
 brk <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
+
+# quick plots, individual
+plot(predHistHistHistDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistHistTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistContempDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistContempTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistContempContempDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistContempContempTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predContempContempContempDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predContempContempContempTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+
+# create plot for sharing
 jpeg("figures/projections.jpg")
 par(mfrow=c(2,2), mar=c(2,2,2,2), bty="n")
-plot(histDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistHistDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
 points(histDip$Longitude, histDip$Latitude, pch=20, cex=0.8, col="white")
 mtext("diploid", cex=1.5)
 mtext("1930", side=2, cex=1.5, las=3)
 
-plot(histTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistHistTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
 points(histTet$Longitude, histTet$Latitude, pch=20, cex=0.8, col="white")
 mtext("tetraploid", cex=1.5)
 
-plot(contempDipProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistContempDip, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
 points(contempDip$Longitude, contempDip$Latitude, pch=20, cex=0.8, col="white")
 mtext("2015", side=2, cex=1.5, las=3)
 
-plot(contempTetProj, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
+plot(predHistHistContempTet, legend=FALSE, col=magma(10), axes=FALSE, breaks=brk)
 points(contempTet$Longitude, contempTet$Latitude, pch=20, cex=0.8, col="white")
 dev.off()
 
