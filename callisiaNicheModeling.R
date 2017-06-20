@@ -13,6 +13,10 @@ library(viridis)
 # create subdirectories
 dir.create("models")
 
+# load contemporary occurrence data
+contempDip <- read.csv(file="data/contemporaryDiploid.csv")
+contempTet <- read.csv(file="data/contemporaryTetraploid.csv")
+
 # load and parse historical occurrence data
 historical <- read.csv(file="data/callisia_historical_occurrence.csv")
 histBoth <- historical %>%
@@ -105,9 +109,6 @@ points(histTet)
 writeRaster(predTetContemp, "models/tetraploidMaxent/histTetContemp.grd")
 
 ## create plots for figures
-# load occurrence data
-contempDip <- read.csv(file="data/contemporaryDiploid.csv")
-contempTet <- read.csv(file="data/contemporaryTetraploid.csv")
 # load projections
 histDipProj <- raster("models/diploidMaxent/histDip.grd")
 contempDipProj <- raster("models/diploidMaxent/contempDip.grd")
