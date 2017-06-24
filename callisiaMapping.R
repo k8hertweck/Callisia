@@ -69,3 +69,8 @@ points(histTetCar$Longitude, histTetCar$Latitude, col='#b2df8a', pch=20, cex=3)
 points(contempDip$Longitude, contempDip$Latitude, col='#1f78b4', pch=20, cex=3)
 points(contempTet$Longitude, contempTet$Latitude, col='#33a02c', pch=20, cex=3)
 dev.off()
+
+# map plain use outline
+jpeg("figures/us.jpg")
+map(database="state")
+dev.off()
