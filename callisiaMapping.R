@@ -57,6 +57,14 @@ points(contempDip$Longitude, contempDip$Latitude, col='#1f78b4', pch=20, cex=2)
 points(contempTet$Longitude, contempTet$Latitude, col='#33a02c', pch=20, cex=2)
 dev.off()
 
+# map only historic points
+jpeg(file="figures/mappingHistoric.jpg")
+southeast <- c("florida", "georgia", "north carolina", "south carolina")
+map(database="state", regions = southeast, interior=T, lwd=2)
+points(histTet$Longitude, histTet$Latitude, col='#b2df8a', pch=20, cex=2)
+points(histDip$Longitude, histDip$Latitude, col='#a6cee3', pch=20, cex=2)
+dev.off()
+
 # map only NC and SC
 histTetCar <- histTet %>%
   filter(!str_detect(Locality, "Fla")) %>% 
