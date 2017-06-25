@@ -70,7 +70,12 @@ points(contempDip$Longitude, contempDip$Latitude, col='#1f78b4', pch=20, cex=3)
 points(contempTet$Longitude, contempTet$Latitude, col='#33a02c', pch=20, cex=3)
 dev.off()
 
-# map plain use outline
+# map plain us outline
 jpeg("figures/us.jpg")
 map(database="state")
+dev.off()
+
+# map plain SE states outline
+jpeg("figures/southeast.jpg")
+map(database="state", regions = southeast)
 dev.off()
