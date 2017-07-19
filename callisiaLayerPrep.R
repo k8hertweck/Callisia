@@ -1,4 +1,4 @@
-## Callisia niche modeling
+## Preparing layers for niche modeling
 
 library(dismo)
 library(fields)
